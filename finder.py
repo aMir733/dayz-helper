@@ -1,4 +1,5 @@
 from xml.etree import ElementTree
+import sys, json
 
 def xmlToJson(xml):
     xml_parsed = ElementTree.parse(xml)
@@ -11,6 +12,9 @@ def xmlToJson(xml):
         values = []
         for value in item.findall('value'):
             values.append(value.get('name'))
+        categories = []
+        for category in item.findall('category'):
+            categories.append(category.get('name'))
         item_info = {
                 'name': item.get('name'),
                 'nominal': item.find('nominal').text,
@@ -21,12 +25,21 @@ def xmlToJson(xml):
                 'quantmax': item.find('quantmax').text,
                 'cost': item.find('cost').text,
                 'flags': item.find('flags').attrib,
-                'category': item.find('category').get('name'),
+                'categories': categories,
                 'usages': usages,
                 'values': values
                 }
         result.append(item_info)
     return result
 
-with open("types.json",'w') as types_json:
-    print(xmlToJson("types.xml"), file=types_json)        
+try:
+    with open("types.json") as types_json:
+        items = json.load(types_json)
+except:
+    with open("types.json",'w') as types_json:
+        json.dump(xmlToJson("types.xml"), types_json, indent=4)
+
+query = sys.argv[1].lower()
+for item in items:
+    if query in item['name'].lower():
+        print(json.dumps(item, indent=2))
