@@ -36,10 +36,16 @@ try:
     with open("types.json") as types_json:
         items = json.load(types_json)
 except:
+    items = xmlToJson("types.xml")
     with open("types.json",'w') as types_json:
-        json.dump(xmlToJson("types.xml"), types_json, indent=4)
+        json.dump(items, types_json, indent=4)
+
 
 query = sys.argv[1].lower()
+matches = []
 for item in items:
     if query in item['name'].lower():
-        print(json.dumps(item, indent=2))
+        matches.append(item)
+for i,j in enumerate(matches):
+    print("[{}] {}".format(i + 1, j['name']))
+print(json.dumps(matches[int(input("-> ")) - 1], indent=2))
