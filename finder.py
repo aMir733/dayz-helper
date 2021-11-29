@@ -48,4 +48,5 @@ for item in items:
         matches.append(item)
 for i,j in enumerate(matches):
     print("[{}] {}".format(i + 1, j['name']))
-print(json.dumps(matches[int(input("-> ")) - 1], indent=2))
+if matches:
+    print(json.dumps(matches[int(input("-> ")) - 1], indent=2))
